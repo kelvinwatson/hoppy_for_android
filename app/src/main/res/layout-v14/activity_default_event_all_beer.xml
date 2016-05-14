@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:id="@+id/row1"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="#FFA500"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/logo2"
+            android:layout_width="80dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/logo2" />
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/eventSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown" />
+
+    <ListView
+        android:id="@+id/beerList"
+        android:layout_width="match_parent"
+        android:layout_height="359dp"
+        android:layout_weight="1.02"
+        android:drawSelectorOnTop="true"
+        android:listSelector="@drawable/ripple" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFA500"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/allBeersButton"
+            style="@style/OrangeButton"
+            android:layout_weight="1"
+            android:width="0dp"
+            android:onClick="onClick"
+            android:text="ALL BEERS" />
+
+        <Button
+            android:id="@+id/favoriteBeersButton"
+            style="@style/OrangeButton"
+            android:layout_weight="1"
+            android:width="0dp"
+            android:onClick="onClick"
+            android:text="BUCKET LIST" />
+
+    </LinearLayout>
+
+</LinearLayout>
