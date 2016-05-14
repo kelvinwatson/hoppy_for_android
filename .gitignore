@@ -1,9 +1,6 @@
 # Built application files
 /*/build/
 
-# Crashlytics configuations
-com_crashlytics_export_strings.xml
-
 # built application files
 *.apk
 *.ap_
@@ -49,8 +46,3 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Eclipse project files
-.classpath
-.project
-
