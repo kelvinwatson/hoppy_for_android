@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="backgroundColor" type="color">#40FFFFFF</item>
+    <item name="rippleColor" type="color">#CCFFA500</item>
+</resources>

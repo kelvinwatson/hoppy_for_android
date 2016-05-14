@@ -1,0 +1,29 @@
+.navbar .nav > li > a {
+  line-height: 100px;
+}
+
+.top-left-logo{  
+  display: inline-block; 
+  height: 30px; 
+  margin-top: -5px
+}
+
+.navbar-brand>img {
+    display: inline-block;
+}
+
+body { 
+  padding-top: 65px; 
+}
+
+.navbar .nav > li > a{
+  line-height:20px;
+}
+
+.line-height-custom{
+  line-height:20px; !important
+}
+
+tbody tr:hover {
+  background: yellow; !important
+}

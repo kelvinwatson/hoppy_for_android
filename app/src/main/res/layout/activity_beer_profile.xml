@@ -1,0 +1,502 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/entireLayout"
+        style="@style/cleanAndClear"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/titleBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="#FFA500"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/logo2"
+                android:layout_width="80dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/logo2" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/beerHeaderLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/breweryLogo"
+                android:layout_width="0dp"
+                android:layout_height="125dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0.4"
+                android:background="@android:color/transparent"
+                android:minHeight="100dp"
+                android:minWidth="100dp" />
+
+            <LinearLayout
+                android:id="@+id/beerInfoLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="0.6"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/beerName"
+                    style="@style/beerProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="beerName" />
+
+                <TextView
+                    android:id="@+id/beerType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="beerType"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/breweryName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="breweryName"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/beerABVIBU"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dividerFavTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/elipsisTop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="\u2022   \u2022   \u2022"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/favoriteAverageRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="-8dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:id="@+id/favoriteImageLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <ToggleButton
+                    android:id="@+id/favoriteToggle"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:background="@drawable/toggle"
+                    android:checked="false"
+                    android:textOff=""
+                    android:textOn="" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ratingLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/averageRatingText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Average rating"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/averageRatingNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="3.0"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFA500" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dividerFavBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical|center_horizontal|top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/elipsisBottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="\u2022   \u2022   \u2022"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/descriptionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/beerDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s"
+                android:textColor="#606060" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/howWasItLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/rateThisBeer"
+                style="@style/beerProfileHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0.5"
+                android:elegantTextHeight="false"
+                android:text="How was it?" />
+
+            <View
+                android:id="@+id/divider1"
+                style="@style/orangeDivider"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ratingRowLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:id="@+id/ratingIconsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <ImageView
+                    android:id="@+id/ratingImg1"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:onClick="onClick"
+                    android:src="@drawable/rate1" />
+
+                <ImageView
+                    android:id="@+id/ratingImg2"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:onClick="onClick"
+                    android:src="@drawable/rate2" />
+
+                <ImageView
+                    android:id="@+id/ratingImg3"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:onClick="onClick"
+                    android:src="@drawable/rate3" />
+
+                <ImageView
+                    android:id="@+id/ratingImg4"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:onClick="onClick"
+                    android:src="@drawable/rate4" />
+
+                <ImageView
+                    android:id="@+id/ratingImg5"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:onClick="onClick"
+                    android:src="@drawable/rate5" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ratingNumbersLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/rate1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:text="@string/r1" />
+
+                <TextView
+                    android:id="@+id/rate2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:text="@string/r2" />
+
+                <TextView
+                    android:id="@+id/rate3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:text="@string/r3" />
+
+                <TextView
+                    android:id="@+id/rate4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:text="@string/r4" />
+
+                <TextView
+                    android:id="@+id/rate5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:text="@string/r5" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/whatDidYouThinkLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/whatDidYouThink"
+                style="@style/beerProfileHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0.5"
+                android:elegantTextHeight="false"
+                android:text="What did you think?"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <View
+                android:id="@+id/orangeDivider3"
+                style="@style/orangeDivider"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/postInitialCommentRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <EditText
+                android:id="@+id/commentTextBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0.75"
+                android:ems="10"
+                android:inputType="textMultiLine"
+                android:lines="2" />
+
+            <Button
+                android:id="@+id/postCommentButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0.25"
+                android:background="#FFA500"
+                android:padding="8dp"
+                android:text="@string/post_button_text"
+                android:textColor="#fff" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/myCommentRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/otherCommentsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/beerProfileHeaderText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="See what others think"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <View
+                android:id="@+id/orangeDivider2"
+                style="@style/orangeDivider"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/othersCommentsRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/colContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/firstCol"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/secondCol"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
