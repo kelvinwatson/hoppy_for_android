@@ -160,17 +160,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void getFacebookProfileAndBeerDataAndStartNextActivity() {
         GraphRequest request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(
-                            JSONObject object,
-                            GraphResponse response) {
-                        userProfile = object;
-                        Log.d(TAG, "got user profile" + userProfile.toString());
-                        getDataAndStartNextActivity(userProfile);
-                    }
-                });
+            AccessToken.getCurrentAccessToken(),
+            new GraphRequest.GraphJSONObjectCallback() {
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                    userProfile = object;
+                    getDataAndStartNextActivity(userProfile);
+                }
+        });
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,link");
         request.setParameters(parameters);
@@ -178,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isLoggedIn() {
-        Log.d(TAG, "checking current access token");
         return AccessToken.getCurrentAccessToken() != null;
     }
 
@@ -199,25 +195,24 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://45.58.38.34:8080/startUp/" + firstName + "/" + lastName + "/" + facebookCredential;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        loginButton.setVisibility(View.INVISIBLE);
-                        progressBar.setVisibility(View.VISIBLE);
-                        Log.d(TAG, "Response is: " + response);
-                        defaultEventBeerData = response;
-                        Intent loginIntent = new Intent(MainActivity.this, DefaultEventAllBeers.class);
-                        loginIntent.putExtra("DefaultEventBeerData", defaultEventBeerData);
-                        startActivity(loginIntent);
-                        finish();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "That didn't work!");
-            }
-                });
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    loginButton.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "Response is: " + response);
+                    defaultEventBeerData = response;
+                    Intent loginIntent = new Intent(MainActivity.this, DefaultEventAllBeers.class);
+                    loginIntent.putExtra("DefaultEventBeerData", defaultEventBeerData);
+                    startActivity(loginIntent);
+                    finish();
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            });
         queue.add(stringRequest);
     }
 

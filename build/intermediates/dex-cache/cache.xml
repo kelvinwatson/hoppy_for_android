@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\exploded-aar\com.android.volley\volley\1.0.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="2cd4b982617e544728de0782d718a58ce1b06e3f">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\classes-a1fe541f302c445bd140c07af7226459ffa98aa0.jar" />
+    </item>
+    <item
+        jar="C:\Users\Bryce\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.3.2\d6b7f0093cec6c9faf65dbfd6a6a345d0ed25e27\picasso-2.3.2.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="d6b7f0093cec6c9faf65dbfd6a6a345d0ed25e27">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\picasso-2.3.2-41d1f62c450fb5ae2fab2ba2af982c930c5a7b3d.jar" />
+    </item>
+    <item
+        jar="C:\Users\Bryce\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-android\1.2.0\6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd\bolts-android-1.2.0.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\bolts-android-1.2.0-c1a4cfc9dab3310c1392e3ec36f8a6b7862020f9.jar" />
+    </item>
+    <item
+        jar="C:\Users\Bryce\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\support-annotations-23.1.1-93343d077b7dccb508b22c2c79d0231e706daf10.jar" />
+    </item>
+    <item
+        jar="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\classes-9673df8c8d30c9f82f6605da9c94c37cd634402f.jar" />
+    </item>
+    <item
+        jar="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\internal_impl-23.1.1-67b9f10ba7f818462a54bac32712908b204581e5.jar" />
+    </item>
+    <item
+        jar="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="15ad6a46fb8e2ed86556e0b330d738b589dc62c7">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\classes-56575cb7c5ba0ed176e43a5cf5cfef47556e36c7.jar" />
+    </item>
+    <item
+        jar="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\classes-2e3b39bb885a2317cbfe34a6a722328464ecf29d.jar" />
+    </item>
+    <item
+        jar="C:\Users\Bryce\.gradle\caches\modules-2\files-2.1\com.nostra13.universalimageloader\universal-image-loader\1.9.5\442dbfb517b9ab5cb5c6da7ebf8cc28ec5bd0375\universal-image-loader-1.9.5.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="442dbfb517b9ab5cb5c6da7ebf8cc28ec5bd0375">
+        <dex dex="C:\Kelvin\AndroidProjects\hoppy-for-android\app\build\intermediates\pre-dexed\release\universal-image-loader-1.9.5-42339166d26c954d3b217e024fdc71b7cfd9e1a0.jar" />
+    </item>
+
+</items>
