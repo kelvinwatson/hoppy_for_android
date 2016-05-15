@@ -11,8 +11,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-//Service runs in bg, no UI, user unaware
-
+/*
+ * DEPRECATED
+ */
 public class FetchDefaultEventAllBeers extends Service {
     private static final String TAG = "com.iamhoppy.hoppy";
     private HttpURLConnection urlConnection;

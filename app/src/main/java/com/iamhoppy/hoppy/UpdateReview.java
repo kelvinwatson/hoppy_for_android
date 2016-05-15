@@ -14,6 +14,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+/*
+ * DEPRECATED
+ */
 public class UpdateReview extends Service {
     private static final String TAG = "com.iamhoppy.hoppy";
     URL url;

@@ -13,6 +13,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/*
+ * DEPRECATED
+ */
+
 public class UpdateFavorites extends Service {
     private static final String TAG = "com.iamhoppy.hoppy";
     URL url;
