@@ -51,12 +51,14 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     private User user = new User();
 
     //private BeerDataReceiver beerDataReceiver;
-    private FavoriteReceiver favoriteReceiver;
+    //private FavoriteReceiver favoriteReceiver;
     private ReviewReceiver reviewReceiver;
 
     private String defaultEventBeerData;
 
-    private boolean newlyCreated = true;
+    private boolean viewingAllBeers = true;
+    private boolean viewingBucketList = false;
+
     //private Parcelable state;
     private ListAdapter beerAdapter;
     private ListView beerList;
@@ -95,21 +97,19 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     }
 
     private void setBeerAdapter() {
-        beerAdapter = new BeerRowAdapter(this, beers, user);
+        beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, beers, user);
         beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
         beerList.setAdapter(beerAdapter);
         beerList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //view.setEnabled(false);
                         Beer selectedBeer = (Beer) (beerList.getItemAtPosition(position));
                         Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
                         viewBeerProfile.putExtra("beer", selectedBeer);
                         viewBeerProfile.putExtra("user", user);
                         startActivity(viewBeerProfile);
-                        //view.setEnabled(true);
                     }
                 }
         );
@@ -119,6 +119,11 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         beers.clear(); //required for notifyDataSetChanged();
         List<Beer> nBrs = parseBeers(resp, "beers"); //required for notifyDataSetChanged();
         beers.addAll(nBrs); //required for notifyDataSetChanged();
+
+        favoriteBeers.clear();
+        List<Beer> nFBrs = parseBeers(resp, "favorites");
+        favoriteBeers.addAll(nFBrs);
+        
         ((BaseAdapter)beerAdapter).notifyDataSetChanged();
     }
 
@@ -166,18 +171,19 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         /* Button to view all beers */
         final Button allBeersButton = (Button) findViewById(R.id.allBeersButton);
         final Button bucketListButton = (Button) findViewById(R.id.favoriteBeersButton);
-        //allBeersButton.setPaintFlags(allBeersButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         allBeersButton.setTypeface(null, Typeface.BOLD);
         allBeersButton.setClickable(false);
         allBeersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                viewingAllBeers = true;
+                viewingBucketList = false;
                 bucketListButton.setClickable(true);
                 allBeersButton.setClickable(false);
                 bucketListButton.setPaintFlags(0);
                 allBeersButton.setTypeface(null, Typeface.BOLD);
                 bucketListButton.setTypeface(null, Typeface.NORMAL);
-                beerAdapter = new BeerRowAdapter(getApplicationContext(), beers, user);
+                beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, beers, user);
                 beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
                 beerList.setAdapter(beerAdapter);
             }
@@ -187,37 +193,19 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         bucketListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                viewingAllBeers = false;
+                viewingBucketList = true;
                 allBeersButton.setClickable(true);
                 bucketListButton.setClickable(false);
                 allBeersButton.setPaintFlags(0);
                 bucketListButton.setTypeface(null, Typeface.BOLD);
                 allBeersButton.setTypeface(null, Typeface.NORMAL);
-                beerAdapter = new BeerRowAdapter(getApplicationContext(), favoriteBeers, user);
+                beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, favoriteBeers, user);
                 final ListView beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
                 beerList.setAdapter(beerAdapter);
             }
         });
     }
-
-    /*@Override
-    protected void onRestoreInstanceState(Bundle inState) {
-        Log.d(TAG,"DEAB onRestoreInstanceState");
-        super.onRestoreInstanceState(inState);
-        beers = (List<Beer>) inState.getSerializable("beers");
-        favoriteBeers = (List<Beer>) inState.getSerializable("favoriteBeers");
-        events = (List<Event>) inState.getSerializable("events");
-        user = (User)inState.getSerializable("user");
-    }*/
-
-    /*@Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG,"DEAB onSaveInstanceState");
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("beers", (Serializable) beers);
-        outState.putSerializable("favoriteBeers", (Serializable) favoriteBeers);
-        outState.putSerializable("events", (Serializable) events);
-        outState.putSerializable("user", user);
-    }*/
 
     /* Parses JSON object and saves to User class */
     private User parseUser(JSONObject startUpDataJSONObj, String param) throws JSONException {
@@ -296,7 +284,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             } //else leave as default false
             if (beerObj.has("comments") && !beerObj.isNull("comments")) {
                 JSONArray arr = beerObj.getJSONArray("comments"); //This line causes exception
-                List<String> tempComments = new ArrayList<String>();
+                List<String> tempComments = new ArrayList<>();
                 for (int j = 0, arrLen = arr.length(); j < arrLen; j++) {
                     tempComments.add(arr.getString(j));
                 }
@@ -329,23 +317,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /* Fetch beer data */
-    private void getBeerData() {
-        /* Start the service to get all beers */
-        Intent fetchIntent = new Intent(this, FetchDefaultEventAllBeers.class);
-        try {
-            if (fetchIntent != null) {
-                fetchIntent.putExtra("firstName", user.getFirstName());
-                fetchIntent.putExtra("lastName", user.getLastName());
-                fetchIntent.putExtra("facebookCredential", user.getFacebookCredential());
-                fetchIntent.putExtra("isRefresh", true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        startService(fetchIntent);
-    }
-
     @Override
     protected void onRestart() { //called when: user switches back from recent apps or home screen launger icon; on back button from second activity
         Log.d(TAG, "DEAB onReStart");
@@ -357,11 +328,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         super.onStart();
         Log.d(TAG, "DEAB onStart");
 
-        /*beerDataReceiver = new BeerDataReceiver();
-        registerReceiver(beerDataReceiver, new IntentFilter("com.iamhoppy.hoppy.beers"));
-        //Receiver for UpdateFavorites Service */
-        favoriteReceiver = new FavoriteReceiver();
-        registerReceiver(favoriteReceiver, new IntentFilter("com.iamhoppy.hoppy.favoriteDone"));
         //Receiver for UpdateReview Service
         reviewReceiver = new ReviewReceiver();
         registerReceiver(reviewReceiver, new IntentFilter("com.iamhoppy.hoppy.reviewDone"));
@@ -383,8 +349,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "DEAB onPause");
-        Log.d(TAG, "DEAB onPause beers.size()="+beers.size());
-        newlyCreated = false;
+        Log.d(TAG, "DEAB onPause beers.size()=" + beers.size());
     }
 
 
@@ -400,16 +365,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     public void onDestroy() {
         Log.d(TAG, "DEAB onDestroy");
         super.onDestroy();
-        try {
-            unregisterReceiver(favoriteReceiver);
-        } catch (Exception e) {
-            e.printStackTrace(); //ignore exception
-        }
-        try {
-            unregisterReceiver(reviewReceiver);
-        } catch (Exception e) {
-            e.printStackTrace(); //ignore exception
-        }
     }
 
     /* Broadcast receiver for reviews */
@@ -438,96 +393,46 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         }
     }
 
-    /* Broadcast receiver for favorites */
-    public class FavoriteReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ((Button) findViewById(R.id.favoriteBeersButton)).setClickable(false);
-            ((Button) findViewById(R.id.allBeersButton)).setClickable(false);
-            int userId = intent.getIntExtra("userID", 0);
-            int beerId = intent.getIntExtra("beerID", 0);
-            boolean success = intent.getBooleanExtra("success", false);
-            boolean added = intent.getBooleanExtra("added", false);
-            boolean alreadyInFavorites = false;
-            boolean inFavorites = false;
-            if (success) {
-                if (added) {
-                    int i;
-                    for (i = 0; i < beers.size(); i++) {
-                        if (beers.get(i).getId() == beerId) {
-                            beers.get(i).setFavorited(true);
-                            break;
-                        }
-                    }
-                    alreadyInFavorites = false;
-                    for (int j = 0; j < favoriteBeers.size(); j++) {
-                        if (favoriteBeers.get(j).getId() == beerId) {
-                            alreadyInFavorites = true;
-                            break;
-                        }
-                    }
-                    if (!alreadyInFavorites) favoriteBeers.add(beers.get(i));
-                } else {
-                    int i;
-                    for (i = 0; i < beers.size(); i++) {
-                        if (beers.get(i).getId() == beerId) {
-                            beers.get(i).setFavorited(false);
-                            break;
-                        }
-                    }
-                    inFavorites = false;
-                    int j;
-                    for (j = 0; j < favoriteBeers.size(); j++) {
-                        if (favoriteBeers.get(j).getId() == beerId) {
-                            inFavorites = true;
-                            break;
-                        }
-                    }
-                    if (inFavorites) favoriteBeers.remove(j);
-                    /*for(Beer b : beers) {
-                        if(b.getId() == beerId) {
-                            b.setFavorited(false);
-                            favoriteBeers.removeAll(Collections.singleton(b));
-                            break;
-                        }
-                    }*/
+
+    public void setFavoriteUI(boolean isFavorited, int beerId){
+        boolean alreadyInFavorites = false;
+        boolean inFavorites = false;
+        int i;
+        if (isFavorited) {
+            for (i = 0; i < beers.size(); i++) {
+                if (beers.get(i).getId() == beerId) {
+                    beers.get(i).setFavorited(true);
+                    break;
                 }
-                Collections.sort(favoriteBeers);
-                Collections.sort(beers);
             }
-            ((Button) findViewById(R.id.favoriteBeersButton)).setClickable(true);
-            ((Button) findViewById(R.id.allBeersButton)).setClickable(true);
+            alreadyInFavorites = false;
+            for (int j = 0; j < favoriteBeers.size(); j++) {
+                if (favoriteBeers.get(j).getId() == beerId) {
+                    alreadyInFavorites = true;
+                    break;
+                }
+            }
+            if (!alreadyInFavorites) favoriteBeers.add(beers.get(i));
+        } else {
+            for (i = 0; i < beers.size(); i++) {
+                if (beers.get(i).getId() == beerId) {
+                    beers.get(i).setFavorited(false);
+                    break;
+                }
+            }
+            inFavorites = false;
+            int j;
+            for (j = 0; j < favoriteBeers.size(); j++) {
+                if (favoriteBeers.get(j).getId() == beerId) {
+                    inFavorites = true;
+                    break;
+                }
+            }
+            if (inFavorites) favoriteBeers.remove(j);
         }
+        Collections.sort(favoriteBeers);
+        Collections.sort(beers);
+        ((BaseAdapter)beerAdapter).notifyDataSetChanged();
     }
 
-    /* Broadcast receiver for beer data
-    public class BeerDataReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // broadcast is detected from FetchDefaultEventAllBeers class
-            defaultEventBeerData = intent.getStringExtra("DefaultEventBeerData");
-             // Parse data
-            if (defaultEventBeerData != null && !defaultEventBeerData.equals("NULL")) {
-                try {
-                    JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
-                    beers = parseBeers(startUpDataJSONObj, "beers");
-                    favoriteBeers = parseBeers(startUpDataJSONObj, "favorites");
-                    events = parseEvents(startUpDataJSONObj, "events");
-                    user = parseUser(startUpDataJSONObj, "user");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (defaultEventBeerData == null) return;
-
-            // ReCreate list of beers
-            beerAdapter = new BeerRowAdapter(context, beers, user);
-            beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
-            beerList.setAdapter(beerAdapter);
-            //if (state != null) {
-            //    Log.d(TAG, "trying to restore listview state..");
-            //    beerList.onRestoreInstanceState(state);
-            //}
-        }
-    } */
 }

@@ -2,6 +2,7 @@ package com.iamhoppy.hoppy;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -63,15 +70,12 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 final boolean isCheckedFinal = isChecked;
                 singleBeerItem.setFavorited(isChecked);
-                Intent updateIntent = new Intent(context, UpdateFavorites.class);
-                try {
-                    updateIntent.putExtra("userID", user.getId());
-                    updateIntent.putExtra("beerID", singleBeerItem.getId());
-                    updateIntent.putExtra("checkedFinal", isCheckedFinal);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if(isChecked){
+                    generateRequestFavorite("addFavorites", true, singleBeerItem.getId());
+                } else {
+                    generateRequestFavorite("removeFavorites", false, singleBeerItem.getId());
                 }
-                getContext().startService(updateIntent);
+
             }
         });
 
@@ -110,5 +114,24 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         }
     }
 
+    private void generateRequestFavorite(String addOrRemove, final boolean isAdded, final int beerId){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = "http://45.58.38.34:8080/"+addOrRemove+"/" + user.getId() + "/" + beerId;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d("BeerRowAdapter",response);
+                    ((DefaultEventAllBeers)context).setFavoriteUI(isAdded, beerId);
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            });
+        queue.add(stringRequest);
+
+    }
 
 }
