@@ -22,12 +22,12 @@ import java.util.List;
 
 class BeerRowAdapter extends ArrayAdapter<Beer> {
     private static final String TAG = "com.iamhoppy.hoppy";
-    Context context;
-    URL url;
+    private Context context;
+    private URL url;
     private HttpURLConnection urlConnection;
     private User user;
 
-    BeerRowAdapter(Context context, List beers, User user) {
+    public BeerRowAdapter(Context context, List beers, User user) {
         super(context, R.layout.custom_beer_row, beers);
         this.context = context;
         this.user = user;

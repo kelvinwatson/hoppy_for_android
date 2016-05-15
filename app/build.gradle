@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.iamhoppy.hoppy"
-        minSdkVersion 21
+        minSdkVersion 18
         targetSdkVersion 23
-        versionCode 16
-        versionName "2.5"
+        versionCode 17
+        versionName "2.6"
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {

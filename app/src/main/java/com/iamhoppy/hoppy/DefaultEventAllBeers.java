@@ -1,5 +1,11 @@
 package com.iamhoppy.hoppy;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -28,20 +35,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /* Displays Beer List for Default Event */
 public class DefaultEventAllBeers extends AppCompatActivity {
-    private static final String TAG = "DEAB";
+    private static final String TAG = "com.iamhoppy.hoppy";
 
     private List<Beer> beers = new ArrayList<>();
     private List<Beer> favoriteBeers = new ArrayList<>();
     private List<Event> events = new ArrayList<>();
+    private Event selectedEvent;
     private User user = new User();
 
-    private BeerDataReceiver beerDataReceiver;
+    //private BeerDataReceiver beerDataReceiver;
     private FavoriteReceiver favoriteReceiver;
     private ReviewReceiver reviewReceiver;
 
@@ -51,6 +60,8 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     //private Parcelable state;
     private ListAdapter beerAdapter;
     private ListView beerList;
+    private SpinnerAdapter eventAdapter;
+    private Spinner eventSpinner;
 
     public boolean onKeyDown(int keycode, KeyEvent event) {
         if (keycode == KeyEvent.KEYCODE_BACK) {
@@ -62,10 +73,93 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate");
+        Log.d(TAG, "DEAB onCreate");
         setContentView(R.layout.activity_default_event_all_beer);
-        /* Set Buttons */
+
+        final Bundle bundle = getIntent().getExtras();
+        defaultEventBeerData = bundle.getString("DefaultEventBeerData");
+        try {
+            JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
+            beers = parseBeers(startUpDataJSONObj, "beers");
+            favoriteBeers = parseBeers(startUpDataJSONObj, "favorites");
+            events = parseEvents(startUpDataJSONObj, "events");
+            user = parseUser(startUpDataJSONObj, "user");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (bundle == null) return;
+
         setButtons();
+        setBeerAdapter();
+        setEventSpinner();
+    }
+
+    private void setBeerAdapter() {
+        beerAdapter = new BeerRowAdapter(this, beers, user);
+        beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
+        beerList.setAdapter(beerAdapter);
+        beerList.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        //view.setEnabled(false);
+                        Beer selectedBeer = (Beer) (beerList.getItemAtPosition(position));
+                        Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
+                        Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
+                        viewBeerProfile.putExtra("beer", selectedBeer);
+                        viewBeerProfile.putExtra("user", user);
+                        startActivity(viewBeerProfile);
+                        //view.setEnabled(true);
+                    }
+                }
+        );
+    }
+
+    private void resetBeerAdapter(JSONObject resp) throws JSONException {
+        beers.clear(); //required for notifyDataSetChanged();
+        List<Beer> nBrs = parseBeers(resp, "beers"); //required for notifyDataSetChanged();
+        beers.addAll(nBrs); //required for notifyDataSetChanged();
+        ((BaseAdapter)beerAdapter).notifyDataSetChanged();
+    }
+
+    /* Create event spinner */
+    private void setEventSpinner(){
+        eventAdapter = new EventSpinnerAdapter(this, events);
+        eventSpinner = (Spinner) findViewById(R.id.eventSpinner);
+        eventSpinner.setAdapter(eventAdapter);
+        eventSpinner.setOnItemSelectedListener(
+            new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
+                    selectedEvent = events.get(position);
+                    //call API using Volley to fetch beers for event ID
+                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                    String url = "http://45.58.38.34:8080/startUp/" + user.getFirstName() + "/" + user.getLastName() + "/" + user.getFacebookCredential() + "/?eventId=" + selectedEvent.getId();
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    resetBeerAdapter(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
+                    queue.add(jsonRequest);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            }
+        );
     }
 
     private void setButtons(){
@@ -104,23 +198,26 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             }
         });
     }
-    @Override
+
+    /*@Override
     protected void onRestoreInstanceState(Bundle inState) {
+        Log.d(TAG,"DEAB onRestoreInstanceState");
         super.onRestoreInstanceState(inState);
         beers = (List<Beer>) inState.getSerializable("beers");
         favoriteBeers = (List<Beer>) inState.getSerializable("favoriteBeers");
         events = (List<Event>) inState.getSerializable("events");
         user = (User)inState.getSerializable("user");
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG,"DEAB onSaveInstanceState");
         super.onSaveInstanceState(outState);
         outState.putSerializable("beers", (Serializable) beers);
         outState.putSerializable("favoriteBeers", (Serializable) favoriteBeers);
         outState.putSerializable("events", (Serializable) events);
         outState.putSerializable("user", user);
-    }
+    }*/
 
     /* Parses JSON object and saves to User class */
     private User parseUser(JSONObject startUpDataJSONObj, String param) throws JSONException {
@@ -251,119 +348,58 @@ public class DefaultEventAllBeers extends AppCompatActivity {
 
     @Override
     protected void onRestart() { //called when: user switches back from recent apps or home screen launger icon; on back button from second activity
-
+        Log.d(TAG, "DEAB onReStart");
         super.onRestart();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
-        beerDataReceiver = new BeerDataReceiver();
+        Log.d(TAG, "DEAB onStart");
+
+        /*beerDataReceiver = new BeerDataReceiver();
         registerReceiver(beerDataReceiver, new IntentFilter("com.iamhoppy.hoppy.beers"));
-        /* Receiver for UpdateFavorites Service */
+        //Receiver for UpdateFavorites Service */
         favoriteReceiver = new FavoriteReceiver();
         registerReceiver(favoriteReceiver, new IntentFilter("com.iamhoppy.hoppy.favoriteDone"));
-        /* Receiver for UpdateReview Service */
+        //Receiver for UpdateReview Service
         reviewReceiver = new ReviewReceiver();
         registerReceiver(reviewReceiver, new IntentFilter("com.iamhoppy.hoppy.reviewDone"));
-        /* Get default event & beer data from MainActivity, parse, and save data */
-        final Bundle bundle = getIntent().getExtras();
-        String defaultEventBeerData = bundle.getString("DefaultEventBeerData");
-        try {
-            JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
-            beers = parseBeers(startUpDataJSONObj, "beers");
-            favoriteBeers = parseBeers(startUpDataJSONObj, "favorites");
-            events = parseEvents(startUpDataJSONObj, "events");
-            user = parseUser(startUpDataJSONObj, "user");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if (bundle == null) return;
-
-        /* Create event spinner */
-        SpinnerAdapter eventAdapter = new EventSpinnerAdapter(this, events);
-        final Spinner eventSpinner = (Spinner) findViewById(R.id.eventSpinner);
-        eventSpinner.setAdapter(eventAdapter);
-        eventSpinner.setOnItemSelectedListener(
-            new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
-                    Event selectedEvent = events.get(position);
-                    //call API to fetch all beers
-                    Intent fetchIntent = new Intent(DefaultEventAllBeers.this, FetchDefaultEventAllBeers.class);
-                    try {
-                        if (fetchIntent != null) {
-                            fetchIntent.putExtra("firstName", user.getFirstName());
-                            fetchIntent.putExtra("lastName", user.getLastName());
-                            fetchIntent.putExtra("facebookCredential", user.getFacebookCredential());
-                            fetchIntent.putExtra("eventId", selectedEvent.getId());
-                        }
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                    startService(fetchIntent);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            }
-        );
-
-        /* Create list of beers */
-        ListAdapter beerAdapter = new BeerRowAdapter(this, beers, user);
-        beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
-        beerList.setAdapter(beerAdapter);
-        beerList.setOnItemClickListener(
-            new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    view.setEnabled(false);
-                    Beer selectedBeer = (Beer) (beerList.getItemAtPosition(position));
-                    Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
-                    Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
-                    viewBeerProfile.putExtra("beer", selectedBeer);
-                    viewBeerProfile.putExtra("user", user);
-                    startActivity(viewBeerProfile);
-                    view.setEnabled(true);
-                }
-            }
-        );
-
-        if (!newlyCreated) {
-            /* Call the fetch service */
-            getBeerData();
-        }
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        if(selectedEvent != null){
+            Log.d(TAG, "DEAB in onResume selectedEvent="+selectedEvent.getName());
+            Log.d(TAG, "DEAB in onResume beers.length="+beers.size());
+        } else {
+            Log.d(TAG, "DEAB in onResume NO SELECTED EVT");
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
+        Log.d(TAG, "DEAB onPause");
+        Log.d(TAG, "DEAB onPause beers.size()="+beers.size());
         newlyCreated = false;
-        // Logs 'app deactivate' App Event.
-        //Log.d(TAG, "saving listview state @ onPause");
-        //state = ((ListView) (findViewById(R.id.beerList))).onSaveInstanceState();
-        AppEventsLogger.deactivateApp(this);
     }
+
+
 
     @Override
     protected void onStop() {
+        Log.d(TAG, "DEAB onStop");
+        Log.d(TAG, "DEAB onStop beers.size()="+beers.size());
         super.onStop();
-        Log.d(TAG, "onStop");
     }
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "DEAB onDestroy");
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
         try {
             unregisterReceiver(favoriteReceiver);
         } catch (Exception e) {
@@ -464,13 +500,13 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         }
     }
 
-    /* Broadcast receiver for beer data */
+    /* Broadcast receiver for beer data
     public class BeerDataReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // broadcast is detected from FetchDefaultEventAllBeers class
             defaultEventBeerData = intent.getStringExtra("DefaultEventBeerData");
-             /* Parse data */
+             // Parse data
             if (defaultEventBeerData != null && !defaultEventBeerData.equals("NULL")) {
                 try {
                     JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
@@ -484,7 +520,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             }
             if (defaultEventBeerData == null) return;
 
-            /* ReCreate list of beers */
+            // ReCreate list of beers
             beerAdapter = new BeerRowAdapter(context, beers, user);
             beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
             beerList.setAdapter(beerAdapter);
@@ -493,5 +529,5 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             //    beerList.onRestoreInstanceState(state);
             //}
         }
-    }
+    } */
 }

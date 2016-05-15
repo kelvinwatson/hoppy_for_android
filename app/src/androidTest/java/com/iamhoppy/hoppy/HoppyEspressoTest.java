@@ -3,6 +3,8 @@ package com.iamhoppy.hoppy;
 import android.content.pm.ActivityInfo;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewAssertion;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
@@ -10,6 +12,7 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -28,9 +31,16 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
+
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.is;
+
 import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.startsWith;
 
 /*
  * Remove margins on buttons before running this test
@@ -61,8 +71,8 @@ public class HoppyEspressoTest {
     }
 
     @Test
-    public void testCaseLoginAndViewBeers() {
-        viewFirstBeerProfile();
+    public void testCaseBackButton() {
+        checkBackButton();
     }
 
     @Test
@@ -91,7 +101,11 @@ public class HoppyEspressoTest {
             .perform(click());
     }
 
-    public void viewFirstBeerProfile() {
+    public void checkBackButton() {
+        onData(hasToString(startsWith("Oregon")))
+                .inAdapterView(withId(R.id.eventSpinner))
+                .perform(click());
+        onView(withId(R.id.eventSpinner)).check(matches(withSpinnerText(containsString("Oregon Brewers Festival"))));
         try {
             onView(withId(R.id.beerList)).check(matches(isDisplayed()));
         } catch (NoMatchingViewException e) {
@@ -102,6 +116,10 @@ public class HoppyEspressoTest {
                 .atPosition(0)
                 .perform(click());
         pressBack();
+        onView(withId(R.id.eventSpinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("Oregon Brewers Festival"))).perform(click());
+        onView(withId(R.id.eventSpinner)).check(matches(withSpinnerText(containsString("Oregon Brewers Festival"))));
+
 //        onData(anything())
 //                .inAdapterView(withId(R.id.beerList))
 //                .atPosition(10)

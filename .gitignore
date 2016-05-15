@@ -1,5 +1,5 @@
 # Built application files
-/*/build/
+build/*
 
 # built application files
 *.apk
@@ -25,6 +25,7 @@ local.properties
 .signing/
 
 # User-specific configurations
+.idea/*
 .idea/libraries/
 .idea/workspace.xml
 .idea/tasks.xml

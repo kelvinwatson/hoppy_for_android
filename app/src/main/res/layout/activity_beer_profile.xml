@@ -66,13 +66,15 @@
                     style="@style/beerProfileName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="beerName" />
+                    android:text="beerName"
+                    android:textIsSelectable="true" />
 
                 <TextView
                     android:id="@+id/beerType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
+                    android:textIsSelectable="true"
                     android:text="beerType"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -80,6 +82,7 @@
                     android:id="@+id/breweryName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textIsSelectable="true"
                     android:text="breweryName"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -211,7 +214,8 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-light"
                 android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s"
-                android:textColor="#606060" />
+                android:textColor="#606060"
+                android:textIsSelectable="true" />
 
         </LinearLayout>
 
