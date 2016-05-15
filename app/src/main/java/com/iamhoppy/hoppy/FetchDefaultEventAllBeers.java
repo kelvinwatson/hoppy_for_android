@@ -44,7 +44,6 @@ public class FetchDefaultEventAllBeers extends Service {
             Runnable r = new Runnable() {   //MUST place service code in thread(req'd for Service class)
                 @Override
                 public void run() {
-                    //TODO: retrieve all beers for default event from database
                     //http://developer.android.com/reference/java/net/HttpURLConnection.html
                     //http://stackoverflow.com/questions/8376072/whats-the-readstream-method-i-just-can-not-find-it-anywhere
                     try {
