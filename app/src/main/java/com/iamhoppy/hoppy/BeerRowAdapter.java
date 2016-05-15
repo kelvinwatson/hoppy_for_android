@@ -131,7 +131,6 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
                 }
             });
         queue.add(stringRequest);
-
     }
 
 }

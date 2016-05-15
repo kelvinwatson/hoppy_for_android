@@ -6,10 +6,13 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -18,8 +21,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +39,7 @@ import java.util.List;
 /* Beer Profile Activity */
 public class BeerProfile extends AppCompatActivity {
     private static final String TAG = "BeerProfile";
+    private static final String baseUrl = "http://45.58.38.34:8080/addReview/";
     public LinearLayout postInitialCommentRow;
     private Beer beer = new Beer();
     private User user = new User();
@@ -61,6 +73,7 @@ public class BeerProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_profile);
+
         if (savedInstanceState != null) {
             beer = (Beer) savedInstanceState.getSerializable("beer");
             user = (User) savedInstanceState.getSerializable("user");
@@ -73,19 +86,7 @@ public class BeerProfile extends AppCompatActivity {
 
         populateBeer();
         setRatingImages();
-
-        /* Reference views */
-        postInitialCommentRow = (LinearLayout) findViewById(R.id.postInitialCommentRow);
-        commentTextBox = (EditText) findViewById(R.id.commentTextBox);
-        postCommentButton = (Button) findViewById(R.id.postCommentButton);
-
-        /* Listener for postCommentButton */
-        postCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postComment();
-            }
-        });
+        setWidgets();
 
         /* Set visibility on whether or not user has already posted comment */
         if (beer.getMyComment() != null && !beer.getMyComment().equals("NULL") && beer.getMyComment().length() > 0) {  //user has previously recorded a comment
@@ -125,6 +126,26 @@ public class BeerProfile extends AppCompatActivity {
                 getApplicationContext().startService(updateIntent);
             }
         });
+    }
+
+    private void setWidgets(){
+        postInitialCommentRow = (LinearLayout) findViewById(R.id.postInitialCommentRow);
+        commentTextBox = (EditText) findViewById(R.id.commentTextBox);
+        postCommentButton = (Button) findViewById(R.id.postCommentButton);
+
+        /* Listener for postCommentButton */
+        postCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftKeyboard();
+                postComment();
+            }
+        });
+    }
+
+    private void hideSoftKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     private void setRatingImages() {
@@ -354,19 +375,28 @@ public class BeerProfile extends AppCompatActivity {
     /* Save comment locally to object, and send to API */
     private void postComment() {
         userComment = commentTextBox.getText().toString();   //get text from EditText view
-        String timeStamp = new SimpleDateFormat("MMM dd, yyyy hh:mm aaa").format(Calendar.getInstance().getTime());
-        userComment = user.getFirstName() + "\n" + timeStamp + "\n" + userComment;
-        beer.setMyComment(userComment);
-        callReviewService(userComment); //encodes comment and updates API
-        commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
-        postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
-        postInitialCommentRow.setVisibility(View.GONE);
-        myCommentRow = (LinearLayout) findViewById(R.id.myCommentRow);
-        myCommentRow.setVisibility(View.VISIBLE);
-        if (((LinearLayout) myCommentRow).getChildCount() > 0) {
-            ((LinearLayout) myCommentRow).removeAllViews();
+        if  (userComment != null &&
+                (!TextUtils.equals(userComment, "null")) &&
+                (!TextUtils.equals(userComment, "NULL")) &&
+                (!TextUtils.isEmpty(userComment))) {
+            String timeStamp = new SimpleDateFormat("MMM dd, yyyy hh:mm aaa").format(Calendar.getInstance().getTime());
+            userComment = user.getFirstName() + "\n" + timeStamp + "\n" + userComment;
+            beer.setMyComment(userComment);
+            callReviewService(); //encodes comment and updates API
+            commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
+            postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
+            postInitialCommentRow.setVisibility(View.GONE);
+            myCommentRow = (LinearLayout) findViewById(R.id.myCommentRow);
+            myCommentRow.setVisibility(View.VISIBLE);
+            if (((LinearLayout) myCommentRow).getChildCount() > 0) {
+                ((LinearLayout) myCommentRow).removeAllViews();
+            }
+            displayMyComment();
+        } else {
+            commentTextBox.setError("Please enter a comment.");
+            return;
         }
-        displayMyComment();
+
     }
 
     /* After a rating image is clicked, set others to clickable */
@@ -468,26 +498,50 @@ public class BeerProfile extends AppCompatActivity {
             }
         }
         if (makeCall) {
-            callReviewService(beer.getMyComment());
+            callReviewService();
         }
     }
 
-    /* Sends rating and comment for API call */
-    private void callReviewService(String comment) {
-        Intent updateIntent = new Intent(getApplicationContext(), UpdateReview.class);
+
+
+
+    /* Sends rating and non-empty comment for API call */
+    private void callReviewService() {
+        final int beerId = beer.getId();
+        final double rating = beer.getRating();
+        final String myComment = beer.getMyComment();
+        RequestQueue queue = Volley.newRequestQueue(BeerProfile.this);
+        String url = null;
         try {
-            updateIntent.putExtra("userID", user.getId());
-            updateIntent.putExtra("beerID", beer.getId());
-            updateIntent.putExtra("rating", beer.getRating());
-            if (beer.getMyComment() != null && beer.getMyComment().length() > 1) {
-                updateIntent.putExtra("comment", comment);
-            } else {
-                updateIntent.putExtra("comment", "NULL");
-            }
-        } catch (Exception e) {
+            url = baseUrl + user.getId() + "/" + beerId + "/" + rating + "/" + URLEncoder.encode(myComment, "UTF-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        getApplicationContext().startService(updateIntent);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d("BeerProfile", response);
+                    for (Beer beer : DefaultEventAllBeers.beers) {
+                        if (beer.getId() == beerId) {
+                            beer.setRating(rating);
+                            beer.setMyComment(myComment);
+                        }
+                    }
+                    for (Beer beer : DefaultEventAllBeers.favoriteBeers) {
+                        if (beer.getId() == beerId) {
+                            beer.setRating(rating);
+                            beer.setMyComment(myComment);
+                        }
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            });
+        queue.add(stringRequest);
     }
 
     /* Set view fields in beer profile */

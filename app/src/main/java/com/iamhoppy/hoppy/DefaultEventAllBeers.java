@@ -6,13 +6,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -28,14 +24,10 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
-import com.facebook.appevents.AppEventsLogger;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,15 +36,11 @@ import java.util.List;
 public class DefaultEventAllBeers extends AppCompatActivity {
     private static final String TAG = "com.iamhoppy.hoppy";
 
-    private List<Beer> beers = new ArrayList<>();
-    private List<Beer> favoriteBeers = new ArrayList<>();
+    public static List<Beer> beers = new ArrayList<>();
+    public static List<Beer> favoriteBeers = new ArrayList<>();
     private List<Event> events = new ArrayList<>();
     private Event selectedEvent;
     private User user = new User();
-
-    //private BeerDataReceiver beerDataReceiver;
-    //private FavoriteReceiver favoriteReceiver;
-    private ReviewReceiver reviewReceiver;
 
     private String defaultEventBeerData;
 
@@ -123,7 +111,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         favoriteBeers.clear();
         List<Beer> nFBrs = parseBeers(resp, "favorites");
         favoriteBeers.addAll(nFBrs);
-        
+
         ((BaseAdapter)beerAdapter).notifyDataSetChanged();
     }
 
@@ -133,37 +121,37 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         eventSpinner = (Spinner) findViewById(R.id.eventSpinner);
         eventSpinner.setAdapter(eventAdapter);
         eventSpinner.setOnItemSelectedListener(
-            new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
-                    selectedEvent = events.get(position);
-                    //call API using Volley to fetch beers for event ID
-                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                    String url = "http://45.58.38.34:8080/startUp/" + user.getFirstName() + "/" + user.getLastName() + "/" + user.getFacebookCredential() + "/?eventId=" + selectedEvent.getId();
-                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    resetBeerAdapter(response);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
+                        selectedEvent = events.get(position);
+                        //call API using Volley to fetch beers for event ID
+                        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                        String url = "http://45.58.38.34:8080/startUp/" + user.getFirstName() + "/" + user.getLastName() + "/" + user.getFacebookCredential() + "/?eventId=" + selectedEvent.getId();
+                        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            resetBeerAdapter(response);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 error.printStackTrace();
                             }
                         });
-                    queue.add(jsonRequest);
-                }
+                        queue.add(jsonRequest);
+                    }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
                 }
-            }
         );
     }
 
@@ -327,22 +315,13 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "DEAB onStart");
-
-        //Receiver for UpdateReview Service
-        reviewReceiver = new ReviewReceiver();
-        registerReceiver(reviewReceiver, new IntentFilter("com.iamhoppy.hoppy.reviewDone"));
+        ((BaseAdapter)beerAdapter).notifyDataSetChanged();
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(selectedEvent != null){
-            Log.d(TAG, "DEAB in onResume selectedEvent="+selectedEvent.getName());
-            Log.d(TAG, "DEAB in onResume beers.length="+beers.size());
-        } else {
-            Log.d(TAG, "DEAB in onResume NO SELECTED EVT");
-        }
     }
 
     @Override
@@ -367,30 +346,8 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         super.onDestroy();
     }
 
-    /* Broadcast receiver for reviews */
-    public class ReviewReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int userId = intent.getIntExtra("userID", 0);
-            int beerId = intent.getIntExtra("beerID", 0);
-            double rating = intent.getDoubleExtra("rating", 0.0);
-            String comment = intent.getStringExtra("comment");
-            boolean success = intent.getBooleanExtra("success", false);
-            if (success) {
-                for (Beer beer : beers) {
-                    if (beer.getId() == beerId) {
-                        beer.setRating(rating);
-                        beer.setMyComment(comment);
-                    }
-                }
-                for (Beer beer : favoriteBeers) {
-                    if (beer.getId() == beerId) {
-                        beer.setRating(rating);
-                        beer.setMyComment(comment);
-                    }
-                }
-            }
-        }
+    public void updateBeerLists(){
+
     }
 
 
