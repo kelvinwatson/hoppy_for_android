@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,7 +62,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "DEAB onCreate");
         setContentView(R.layout.activity_default_event_all_beer);
 
         final Bundle bundle = getIntent().getExtras();
@@ -307,14 +305,12 @@ public class DefaultEventAllBeers extends AppCompatActivity {
 
     @Override
     protected void onRestart() { //called when: user switches back from recent apps or home screen launger icon; on back button from second activity
-        Log.d(TAG, "DEAB onReStart");
         super.onRestart();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "DEAB onStart");
         ((BaseAdapter)beerAdapter).notifyDataSetChanged();
     }
 
@@ -327,22 +323,17 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "DEAB onPause");
-        Log.d(TAG, "DEAB onPause beers.size()=" + beers.size());
     }
 
 
 
     @Override
     protected void onStop() {
-        Log.d(TAG, "DEAB onStop");
-        Log.d(TAG, "DEAB onStop beers.size()="+beers.size());
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "DEAB onDestroy");
         super.onDestroy();
     }
 
