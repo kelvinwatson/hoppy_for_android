@@ -2,7 +2,7 @@
 
 Hoppy is an Android application that is currently available as a free download from Google Play. 
 
-Hoppy allows users to keep track of beers featured at beer events in Portland, Oregon. Often, beer events and festivals list their beers in print format, and few provide a forum for beer drinkers to rate beers, provide their thoughts, and add beers to their bucket lists.
+Hoppy allows users to keep track of beers featured at beer events in Portland, Oregon. Often, beer events and festivals list their beers in print format, and few provide a forum for beer drinkers to rate beers, provide their thoughts, and add beers to their bucket lists. Introducing Hoppy, a fast and fun way to rate and review beers at events in Portland, Oregon.
 
 
 
