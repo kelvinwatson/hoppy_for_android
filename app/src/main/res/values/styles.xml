@@ -60,4 +60,20 @@
         <item name="android:layout_marginRight">-4dp</item>
     </style>
 
+    <style name="OrangeButtonOlderVersions" parent="Theme.AppCompat.Light">
+        <item name="android:background">#FFA500</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:textSize">18dp</item>
+
+        <!--comment these margins out before running tests -->
+        <item name="android:layout_marginTop">-5dp</item>
+        <item name="android:layout_marginBottom">-5dp</item>
+        <item name="android:layout_marginLeft">-4dp</item>
+        <item name="android:layout_marginRight">-4dp</item>
+    </style>
+
+
 </resources>
