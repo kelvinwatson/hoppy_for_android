@@ -53,6 +53,7 @@ public class BeerProfile extends AppCompatActivity {
     private TextView timeView;
     private LinearLayout myCommentRow;
     private ImageView breweryLogo;
+    private Event event;
 
     @Override
     protected void onPause() {
@@ -77,11 +78,13 @@ public class BeerProfile extends AppCompatActivity {
         if (savedInstanceState != null) {
             beer = (Beer) savedInstanceState.getSerializable("beer");
             user = (User) savedInstanceState.getSerializable("user");
+            event = (Event) savedInstanceState.getSerializable("event");
             userComment = savedInstanceState.getString("userComment");
         } else {
             final Bundle bundle = getIntent().getExtras();
             beer = (Beer) bundle.getSerializable("beer");
             user = (User) bundle.getSerializable("user");
+            event = (Event)bundle.getSerializable("event");
         }
 
         populateBeer();
@@ -149,7 +152,7 @@ public class BeerProfile extends AppCompatActivity {
     }
 
     private void setRatingImages() {
-                /* Reference rating images and add to arrays */
+        /* Reference rating images and add to arrays */
         ratingImages = new ArrayList<ImageView>();
         ratingImages.add((ImageView) findViewById(R.id.ratingImg1));
         ratingImages.add((ImageView) findViewById(R.id.ratingImg2));
@@ -200,6 +203,7 @@ public class BeerProfile extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putSerializable("beer", beer);
         outState.putSerializable("user", user);
+        outState.putSerializable("event", event);
         outState.putString("userComment", commentTextBox.getText().toString());
     }
 
@@ -522,18 +526,11 @@ public class BeerProfile extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     Log.d("BeerProfile", response);
-                    for (Beer beer : DefaultEventAllBeers.beers) {
-                        if (beer.getId() == beerId) {
-                            beer.setRating(rating);
-                            beer.setMyComment(myComment);
-                        }
-                    }
-                    for (Beer beer : DefaultEventAllBeers.favoriteBeers) {
-                        if (beer.getId() == beerId) {
-                            beer.setRating(rating);
-                            beer.setMyComment(myComment);
-                        }
-                    }
+                    setRatingAndComment(DefaultEventAllBeers.beers, beerId, rating, myComment);
+                    setRatingAndComment(DefaultEventAllBeers.favoriteBeers, beerId, rating, myComment);
+                    //TODO: trigger refresh of beer data to update avg rating
+                    BeerUtils bu = new BeerUtils(BeerProfile.this);
+                    bu.getBeers(user.getFirstName(),user.getLastName(),user.getFacebookCredential(),event.getId());
                 }
             },
             new Response.ErrorListener() {
@@ -542,6 +539,23 @@ public class BeerProfile extends AppCompatActivity {
                 }
             });
         queue.add(stringRequest);
+    }
+
+    private void setRatingAndComment(List<Beer> lis, int beerId, double rating, String mComment){
+        int i=0;
+        Beer match = null;
+        for (Beer beer : lis) {
+            if (beer.getId() == beerId) {
+                match = beer;
+                break;
+            }
+            i++;
+        }
+        if(match!=null){
+            match.setRating(rating);
+            match.setMyComment(mComment);
+            lis.set(i, match);
+        }
     }
 
     /* Set view fields in beer profile */

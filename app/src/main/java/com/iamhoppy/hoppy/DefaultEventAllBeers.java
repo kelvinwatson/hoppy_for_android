@@ -90,11 +90,12 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Beer selectedBeer = (Beer) (beerList.getItemAtPosition(position));
+                        Beer selectedBeer = beers.get(position);
                         Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
                         viewBeerProfile.putExtra("beer", selectedBeer);
                         viewBeerProfile.putExtra("user", user);
+                        viewBeerProfile.putExtra("event", selectedEvent);
                         startActivity(viewBeerProfile);
                     }
                 }
