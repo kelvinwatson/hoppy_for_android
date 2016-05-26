@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BeerRowAdapter extends ArrayAdapter<Beer> {
@@ -33,6 +34,7 @@ public class BeerRowAdapter extends ArrayAdapter<Beer> {
     private URL url;
     private HttpURLConnection urlConnection;
     private User user;
+    private List<Beer> beers = new ArrayList<>();
 
     @Override
     public void clear() {
@@ -41,8 +43,14 @@ public class BeerRowAdapter extends ArrayAdapter<Beer> {
 
     public BeerRowAdapter(Context context, List<Beer> beers, User user) {
         super(context, R.layout.custom_beer_row, beers);
+        this.beers = beers;
         this.context = context;
         this.user = user;
+    }
+
+    public void update(List<Beer> beers){
+        this.beers = beers;
+        this.notifyDataSetChanged();
     }
 
 
@@ -50,7 +58,8 @@ public class BeerRowAdapter extends ArrayAdapter<Beer> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inf = LayoutInflater.from(getContext());
         View customView = inf.inflate(R.layout.custom_beer_row, parent, false);
-        final Beer singleBeerItem = getItem(position);
+        //final Beer singleBeerItem = getItem(position);
+        final Beer singleBeerItem = beers.get(position);
         //Reference all views and perform event handling for each
         ImageView breweryLogo = (ImageView) customView.findViewById(R.id.breweryLogo);
         Picasso.with(context)

@@ -120,12 +120,13 @@ public class DefaultEventAllBeers extends AppCompatActivity {
 
         //beerAdapter.notifyDataSetChanged();
         if(viewingAllBeers){
-            beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, beers, user);
+        //    beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, beers, user);
+             beerAdapter.update(beers);
         } else {
-            beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, favoriteBeers, user);
+        //    beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, favoriteBeers, user);
+            beerAdapter.update(favoriteBeers);
         }
-        beerList.setAdapter(beerAdapter);
-
+        //beerList.setAdapter(beerAdapter);
     }
 
     /* Create event spinner */
