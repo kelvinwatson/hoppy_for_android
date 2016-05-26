@@ -428,73 +428,48 @@ public class BeerProfile extends AppCompatActivity {
         switch (intRating) {
             case 1: {
                 setClickable(1, 2, 3, 4);
-                //ratingImages.get(0).setImageResource(R.drawable.rate1);
                 setPicassoImage(ctx, R.drawable.rate1, ratingImages.get(0));
-                //ratingImages.get(1).setImageResource(R.drawable.rate2dark);
                 setPicassoImage(ctx, R.drawable.rate2dark, ratingImages.get(1));
-                //ratingImages.get(2).setImageResource(R.drawable.rate3dark);
                 setPicassoImage(ctx, R.drawable.rate3dark, ratingImages.get(2));
-                //ratingImages.get(3).setImageResource(R.drawable.rate4dark);
                 setPicassoImage(ctx,R.drawable.rate4dark,ratingImages.get(3));
-                //ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 setPicassoImage(ctx,R.drawable.rate5dark,ratingImages.get(4));
 
                 break;
             }
             case 2: {
                 setClickable(0, 2, 3, 4);
-                //ratingImages.get(1).setImageResource(R.drawable.rate2);
                 setPicassoImage(ctx, R.drawable.rate2, ratingImages.get(1));
-                //ratingImages.get(0).setImageResource(R.drawable.rate1dark);
                 setPicassoImage(ctx, R.drawable.rate1dark, ratingImages.get(0));
-                //ratingImages.get(2).setImageResource(R.drawable.rate3dark);
                 setPicassoImage(ctx, R.drawable.rate3dark, ratingImages.get(2));
-                //ratingImages.get(3).setImageResource(R.drawable.rate4dark);
                 setPicassoImage(ctx, R.drawable.rate4dark, ratingImages.get(3));
-                //ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 setPicassoImage(ctx, R.drawable.rate5dark, ratingImages.get(4));
 
                 break;
             }
             case 3: {
                 setClickable(0, 1, 3, 4);
-                //ratingImages.get(2).setImageResource(R.drawable.rate3);
                 setPicassoImage(ctx, R.drawable.rate3, ratingImages.get(2));
-                //ratingImages.get(0).setImageResource(R.drawable.rate1dark);
                 setPicassoImage(ctx, R.drawable.rate1dark, ratingImages.get(0));
-                //ratingImages.get(1).setImageResource(R.drawable.rate2dark);
                 setPicassoImage(ctx, R.drawable.rate2dark, ratingImages.get(1));
-                //ratingImages.get(3).setImageResource(R.drawable.rate4dark);
                 setPicassoImage(ctx, R.drawable.rate4dark, ratingImages.get(3));
-                //ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 setPicassoImage(ctx, R.drawable.rate5dark, ratingImages.get(4));
                 break;
             }
             case 4: {
                 setClickable(0, 1, 2, 4);
-                //ratingImages.get(3).setImageResource(R.drawable.rate4);
                 setPicassoImage(ctx, R.drawable.rate4, ratingImages.get(3));
-                //ratingImages.get(0).setImageResource(R.drawable.rate1dark);
                 setPicassoImage(ctx, R.drawable.rate1dark, ratingImages.get(0));
-                //ratingImages.get(1).setImageResource(R.drawable.rate2dark);
                 setPicassoImage(ctx, R.drawable.rate2dark, ratingImages.get(1));
-                //ratingImages.get(2).setImageResource(R.drawable.rate3dark);
                 setPicassoImage(ctx, R.drawable.rate3dark, ratingImages.get(2));
-                //ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 setPicassoImage(ctx, R.drawable.rate5dark, ratingImages.get(4));
                 break;
             }
             case 5: {
                 setClickable(0, 1, 2, 3);
-                //ratingImages.get(4).setImageResource(R.drawable.rate5);
                 setPicassoImage(ctx, R.drawable.rate5, ratingImages.get(4));
-                //ratingImages.get(0).setImageResource(R.drawable.rate1dark);
                 setPicassoImage(ctx, R.drawable.rate1dark, ratingImages.get(0));
-                //ratingImages.get(1).setImageResource(R.drawable.rate2dark);
                 setPicassoImage(ctx, R.drawable.rate2dark, ratingImages.get(1));
-                //ratingImages.get(2).setImageResource(R.drawable.rate3dark);
                 setPicassoImage(ctx, R.drawable.rate3dark, ratingImages.get(2));
-                //ratingImages.get(3).setImageResource(R.drawable.rate4dark);
                 setPicassoImage(ctx, R.drawable.rate4dark, ratingImages.get(3));
                 break;
             }
@@ -505,9 +480,6 @@ public class BeerProfile extends AppCompatActivity {
             callReviewService();
         }
     }
-
-
-
 
     /* Sends rating and non-empty comment for API call */
     private void callReviewService() {
@@ -532,7 +504,6 @@ public class BeerProfile extends AppCompatActivity {
                     Log.d("BeerProfile", response);
                     setRatingAndComment(DefaultEventAllBeers.beers, beerId, rating, myComment);
                     setRatingAndComment(DefaultEventAllBeers.favoriteBeers, beerId, rating, myComment);
-                    //TODO: trigger refresh of beer data to update avg rating
                     BeerUtils bu = new BeerUtils(BeerProfile.this);
                     bu.getBeers(user.getFirstName(),user.getLastName(),user.getFacebookCredential(),event.getId());
                 }

@@ -31,8 +31,6 @@ import java.util.List;
 public class BeerRowAdapter extends ArrayAdapter<Beer> {
     private static final String TAG = "com.iamhoppy.hoppy";
     private Context context;
-    private URL url;
-    private HttpURLConnection urlConnection;
     private User user;
     private List<Beer> beers = new ArrayList<>();
 
@@ -52,7 +50,6 @@ public class BeerRowAdapter extends ArrayAdapter<Beer> {
         this.beers = beers;
         this.notifyDataSetChanged();
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
