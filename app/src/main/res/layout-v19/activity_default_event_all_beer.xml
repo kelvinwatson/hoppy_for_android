@@ -52,7 +52,7 @@
 
         <Button
             android:id="@+id/favoriteBeersButton"
-            style="@style/OrangeButton"
+            style="@style/OrangeButtonOlderVersions"
             android:layout_weight="1"
             android:width="0dp"
             android:onClick="onClick"

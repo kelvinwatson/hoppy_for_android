@@ -517,7 +517,11 @@ public class BeerProfile extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(BeerProfile.this);
         String url = null;
         try {
-            url = baseUrl + user.getId() + "/" + beerId + "/" + rating + "/" + URLEncoder.encode(myComment, "UTF-8").replace("+", "%20");
+            if(myComment != null && myComment.length() > 1){
+                url = baseUrl + user.getId() + "/" + beerId + "/" + rating + "/" + URLEncoder.encode(myComment, "UTF-8").replace("+", "%20");
+            } else {
+                url = baseUrl + user.getId() + "/" + beerId + "/" + rating + "/NULL";
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

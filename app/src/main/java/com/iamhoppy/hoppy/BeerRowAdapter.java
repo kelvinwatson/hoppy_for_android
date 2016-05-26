@@ -27,18 +27,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-class BeerRowAdapter extends ArrayAdapter<Beer> {
+public class BeerRowAdapter extends ArrayAdapter<Beer> {
     private static final String TAG = "com.iamhoppy.hoppy";
     private Context context;
     private URL url;
     private HttpURLConnection urlConnection;
     private User user;
 
-    public BeerRowAdapter(Context context, List beers, User user) {
+    @Override
+    public void clear() {
+        super.clear();
+    }
+
+    public BeerRowAdapter(Context context, List<Beer> beers, User user) {
         super(context, R.layout.custom_beer_row, beers);
         this.context = context;
         this.user = user;
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

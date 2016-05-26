@@ -10,11 +10,13 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -34,6 +36,7 @@ import java.util.List;
 /* Displays Beer List for Default Event */
 public class DefaultEventAllBeers extends AppCompatActivity {
     private static final String TAG = "com.iamhoppy.hoppy";
+    private boolean initialLoad = true;
 
     public static List<Beer> beers = new ArrayList<>();
     public static List<Beer> favoriteBeers = new ArrayList<>();
@@ -47,7 +50,8 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     private boolean viewingBucketList = false;
 
     //private Parcelable state;
-    private ListAdapter beerAdapter;
+    private BeerRowAdapter beerAdapter;
+    private BeerRowAdapter favoriteAdapter;
     private ListView beerList;
     private SpinnerAdapter eventAdapter;
     private Spinner eventSpinner;
@@ -90,8 +94,8 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Beer selectedBeer = beers.get(position);
                         Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
+                        Beer selectedBeer = beers.get(position);
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
                         viewBeerProfile.putExtra("beer", selectedBeer);
                         viewBeerProfile.putExtra("user", user);
@@ -102,16 +106,26 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         );
     }
 
-    private void resetBeerAdapter(JSONObject resp) throws JSONException {
+    private void repopulateBeerLists(JSONObject resp) throws JSONException{
+        //beerAdapter.clear(); //NEW
+
         beers.clear(); //required for notifyDataSetChanged();
         List<Beer> nBrs = parseBeers(resp, "beers"); //required for notifyDataSetChanged();
         beers.addAll(nBrs); //required for notifyDataSetChanged();
+        //beerAdapter.addAll(beers);
 
         favoriteBeers.clear();
         List<Beer> nFBrs = parseBeers(resp, "favorites");
         favoriteBeers.addAll(nFBrs);
 
-        ((BaseAdapter)beerAdapter).notifyDataSetChanged();
+        //beerAdapter.notifyDataSetChanged();
+        if(viewingAllBeers){
+            beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, beers, user);
+        } else {
+            beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, favoriteBeers, user);
+        }
+        beerList.setAdapter(beerAdapter);
+
     }
 
     /* Create event spinner */
@@ -126,25 +140,30 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                         Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
                         selectedEvent = events.get(position);
                         //call API using Volley to fetch beers for event ID
-                        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                        String url = "http://45.58.38.34:8080/startUp/" + user.getFirstName() + "/" + user.getLastName() + "/" + user.getFacebookCredential() + "/?eventId=" + selectedEvent.getId();
-                        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        try {
-                                            resetBeerAdapter(response);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
+                        if(!initialLoad){
+                            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                            String url = "http://45.58.38.34:8080/startUp/" + user.getFirstName() + "/" + user.getLastName() + "/" + user.getFacebookCredential() + "/?eventId=" + selectedEvent.getId();
+                            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                                    new Response.Listener<JSONObject>() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
+                                            try {
+                                                repopulateBeerLists(response);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
                                         }
-                                    }
-                                }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                error.printStackTrace();
-                            }
-                        });
-                        queue.add(jsonRequest);
+                                    }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    error.printStackTrace();
+                                }
+                            });
+                            queue.add(jsonRequest);
+                        } else {
+                            initialLoad=false;
+                        }
                     }
 
                     @Override
