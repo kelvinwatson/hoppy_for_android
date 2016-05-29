@@ -91,18 +91,18 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
         beerList.setAdapter(beerAdapter);
         beerList.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
-                        Beer selectedBeer = beers.get(position);
-                        Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
-                        viewBeerProfile.putExtra("beer", selectedBeer);
-                        viewBeerProfile.putExtra("user", user);
-                        viewBeerProfile.putExtra("event", selectedEvent);
-                        startActivity(viewBeerProfile);
-                    }
+            new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
+                    Beer selectedBeer = viewingAllBeers? beers.get(position) : favoriteBeers.get(position);
+                    Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
+                    viewBeerProfile.putExtra("beer", selectedBeer);
+                    viewBeerProfile.putExtra("user", user);
+                    viewBeerProfile.putExtra("event", selectedEvent);
+                    startActivity(viewBeerProfile);
                 }
+            }
         );
     }
 
@@ -190,9 +190,10 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 bucketListButton.setPaintFlags(0);
                 allBeersButton.setTypeface(null, Typeface.BOLD);
                 bucketListButton.setTypeface(null, Typeface.NORMAL);
-                beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, beers, user);
-                beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
-                beerList.setAdapter(beerAdapter);
+                //beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, beers, user);
+                //beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
+                //beerList.setAdapter(beerAdapter);
+                beerAdapter.update(beers);
             }
         });
 
@@ -207,9 +208,10 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 allBeersButton.setPaintFlags(0);
                 bucketListButton.setTypeface(null, Typeface.BOLD);
                 allBeersButton.setTypeface(null, Typeface.NORMAL);
-                beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, favoriteBeers, user);
-                final ListView beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
-                beerList.setAdapter(beerAdapter);
+                //beerAdapter = new BeerRowAdapter(DefaultEventAllBeers.this, favoriteBeers, user);
+                //beerList = (ListView) findViewById(R.id.beerList); //get reference to listview
+                //beerList.setAdapter(beerAdapter);
+                beerAdapter.update(favoriteBeers);
             }
         });
     }

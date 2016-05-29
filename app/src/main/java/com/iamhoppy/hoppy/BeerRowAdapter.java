@@ -52,11 +52,17 @@ public class BeerRowAdapter extends ArrayAdapter<Beer> {
     }
 
     @Override
+    public int getCount() {
+        return beers.size();
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inf = LayoutInflater.from(getContext());
         View customView = inf.inflate(R.layout.custom_beer_row, parent, false);
         //final Beer singleBeerItem = getItem(position);
         final Beer singleBeerItem = beers.get(position);
+
         //Reference all views and perform event handling for each
         ImageView breweryLogo = (ImageView) customView.findViewById(R.id.breweryLogo);
         Picasso.with(context)
@@ -82,7 +88,7 @@ public class BeerRowAdapter extends ArrayAdapter<Beer> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 final boolean isCheckedFinal = isChecked;
                 singleBeerItem.setFavorited(isChecked);
-                if(isChecked){
+                if (isChecked) {
                     generateRequestFavorite("addFavorites", true, singleBeerItem.getId());
                 } else {
                     generateRequestFavorite("removeFavorites", false, singleBeerItem.getId());

@@ -8,8 +8,8 @@ android {
         applicationId "com.iamhoppy.hoppy"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 20
-        versionName "2.9"
+        versionCode 21
+        versionName "3.0"
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
